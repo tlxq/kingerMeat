@@ -1,0 +1,6 @@
+import tseslint from 'typescript-eslint'
+
+// TypeScript-rekommenderade regler — fångar vanliga misstag
+export default [
+  ...tseslint.configs.recommended,
+]
