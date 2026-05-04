@@ -1,13 +1,31 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
+// Genererar JS-kod vi kan importera för att prata med databasen
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
+// Vilken typ av databas vi använder — URL:en finns i prisma.config.ts
 datasource db {
   provider = "mysql"
+}
+
+// Blir tabellen "Category" i databasen
+model Category {
+  id          Int       @id @default(autoincrement()) // primärnyckel, räknas upp automatiskt
+  name        String    @db.VarChar(100)
+  slug        String    @unique @db.VarChar(100) // t.ex. "vilt-vildsvin", måste vara unikt
+  description String?   @db.Text // valfritt, ? = får vara tomt
+  products    Product[] // ingen kolumn — virtuell länk till alla produkter i denna kategori
+}
+
+// Blir tabellen "Product" i databasen
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(200)
+  description String?  @db.Text
+  price       Decimal  @db.Decimal(10, 2) // Decimal istället för float — säkert för pengar
+  weightGrams Int
+  stockQty    Int      @default(0) // börjar på 0 om inget annat anges
+  categoryId  Int // foreign key — pekar på Category.id
+  createdAt   DateTime @default(now()) // fylls i automatiskt av databasen
+  category    Category @relation(fields: [categoryId], references: [id]) // kopplar categoryId → Category
 }
