@@ -1,11 +1,12 @@
-// Genererar JS-kod vi kan importera för att prata med databasen
+// Generator för att generera
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js" // genererar klienten vi importerar i koden
 }
 
-// Vilken typ av databas vi använder — URL:en finns i prisma.config.ts
+// Vilken typ av databas vi använder
 datasource db {
   provider = "mysql"
+  url      = env("DATABASE_URL") // läser DATABASE_URL från .env
 }
 
 // Blir tabellen "Category" i databasen
