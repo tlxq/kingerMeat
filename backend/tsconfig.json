@@ -16,6 +16,7 @@
     // "types": ["node"],
     // and npm install -D @types/node
     // Other Outputs
+    "noImplicitAny": true,
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
@@ -25,8 +26,8 @@
     // Style Options
     // "noImplicitReturns": true,
     // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     // "noFallthroughCasesInSwitch": true,
     // "noPropertyAccessFromIndexSignature": true,
     // Recommended Options
