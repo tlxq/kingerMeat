@@ -13,7 +13,7 @@ REST API for an online wild game meat shop. Built as a school final project (YH 
 
 ```
 git clone https://github.com/your-username/kingerMeat.git
-cd kingerMeat/backend
+cd kingerMeat/server
 ```
 
 2. Install dependencies
@@ -22,7 +22,7 @@ cd kingerMeat/backend
 npm install
 ```
 
-3. Create a `.env` file in `backend/`
+3. Create a `.env` file in `server/`
 
 ```
 DATABASE_URL="mysql://USER:PASSWORD@HOST:PORT/kinger_meat"
