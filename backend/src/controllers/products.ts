@@ -1,12 +1,10 @@
-import type { Request, Response } from "express"
-import prisma from "../db/prisma.js"
-import { z } from "zod"
+import type { Request, Response } from 'express'
+import prisma from '../db/prisma.js'
+import { AppError } from '../lib/AppError.js'
+import { z } from 'zod'
 
+// Hämtar alla produkter, filtrerar på kategori om query skickas med
 export async function getAllProducts(req: Request, res: Response) {
-
-
-
-
   const { category } = req.query
 
   // hämta alla produkter inkl. kategorinamnet på varje produkt
@@ -20,24 +18,24 @@ export async function getAllProducts(req: Request, res: Response) {
 
 const idSchema = z.coerce.number().int().positive()
 
-export async function getProductById(req: Request<{ id: string }>, res: Response) {
+// Hämtar från produktens id 400 om id är fel eller 404 om produkten inte finns
+export async function getProductById(
+  req: Request<{ id: string }>,
+  res: Response,
+) {
   const parsed = idSchema.safeParse(req.params.id)
-
   if (!parsed.success) {
-    res.status(400).json({ error: 'Invalid id' })
-    return
+    throw new AppError(400, 'Invalid id')
   }
 
   const id = parsed.data
-
   const product = await prisma.product.findUnique({
     where: { id },
     include: { category: true },
   })
 
   if (!product) {
-    res.status(404).json({ error: 'Product not found' })
-    return
+    throw new AppError(404, 'Product not found')
   }
 
   res.json(product)
