@@ -3,6 +3,7 @@ import productRouter from './routes/products.js'
 import categoryRouter from './routes/categories.js'
 import statsRouter from './routes/stats.js'
 import { errorHandler } from './middleware/errorHandler.js'
+import { requestLogger } from './middleware/requestLogger.js'
 import prisma from './db/prisma.js'
 import 'dotenv/config'
 
@@ -12,6 +13,7 @@ const PORT = process.env.PORT ?? 3000
 
 // Middleware som tolkar JSON i request body
 app.use(express.json())
+app.use(requestLogger)
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' })
 })
