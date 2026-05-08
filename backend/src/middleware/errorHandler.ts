@@ -1,3 +1,4 @@
+import { AppError } from '../lib/AppError.js'
 import type { Request, Response, NextFunction } from 'express'
 
 export function errorHandler(
@@ -6,6 +7,9 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ) {
-  console.error(err)
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({ error: err.message })
+  }
+
   res.status(500).json({ error: 'Internal server error' })
 }
