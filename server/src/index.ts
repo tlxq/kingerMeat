@@ -11,6 +11,7 @@ import 'dotenv/config'
 // Skapa app-instansen
 const app = express()
 const PORT = process.env.PORT ?? 3000
+const ENV = process.env.NODE_ENV ?? 'development'
 
 // Middleware som tolkar JSON i request body
 app.use(express.json())
@@ -28,7 +29,7 @@ app.use(errorHandler)
 
 // Här startas servern
 const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on http://localhost:${PORT} [${ENV}]`)
 })
 
 async function shutdown() {
