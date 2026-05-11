@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from 'express'
 import productRouter from './routes/products.js'
 import categoryRouter from './routes/categories.js'
@@ -6,7 +7,6 @@ import { errorHandler } from './middleware/errorHandler.js'
 import { requestLogger } from './middleware/requestLogger.js'
 import prisma from './db/prisma.js'
 import cors from 'cors'
-import 'dotenv/config'
 
 // Skapa app-instansen
 const app = express()
