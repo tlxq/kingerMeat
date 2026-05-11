@@ -6,6 +6,7 @@ import prisma from './db/prisma.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { requestLogger } from './middleware/requestLogger.js'
 import categoryRouter from './routes/categories.js'
+import healthRouter from './routes/health.js'
 import productRouter from './routes/products.js'
 import statsRouter from './routes/stats.js'
 
@@ -19,20 +20,7 @@ app.use(cors({ origin: CORS_ORIGIN }))
 app.use(express.json({ limit: '100kb' }))
 
 app.use(requestLogger)
-app.get('/health', async (_req, res) => {
-  const info = {
-    env: ENV,
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-  }
-  try {
-    await prisma.$queryRaw`SELECT 1`
-    res.json({ status: 'ok', db: 'ok', ...info })
-  } catch {
-    res.status(503).json({ status: 'degraded', db: 'error', ...info })
-  }
-})
-
+app.use('/health', healthRouter)
 app.use('/api/products', productRouter)
 app.use('/api/categories', categoryRouter)
 app.use('/api/stats', statsRouter)
