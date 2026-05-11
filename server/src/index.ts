@@ -54,8 +54,17 @@ async function shutdown() {
   const forceExit = setTimeout(() => process.exit(1), 10_000)
   forceExit.unref()
 
-  await prisma.$disconnect()
-  server.close(() => process.exit(0))
+  server.close(async (err) => {
+    if (err) console.error('Error closing server:', err)
+    try {
+      await prisma.$disconnect()
+      process.exit(0)
+    } catch (e) {
+      console.error('Error disconnecting prisma:', e)
+      process.exit(1)
+    }
+  })
+  server.closeAllConnections()
 }
 process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)
