@@ -12,26 +12,25 @@ import statsRouter from './routes/stats.js'
 const app = express()
 const PORT = process.env.PORT ?? 3000
 const ENV = process.env.NODE_ENV ?? 'development'
+const CORS_ORIGIN = process.env.CORS_ORIGIN ?? 'http://localhost:5173'
 
 app.use(helmet())
-app.use(cors())
+app.use(cors({ origin: CORS_ORIGIN }))
 app.use(express.json({ limit: '100kb' }))
 
 app.use(requestLogger)
 app.get('/health', async (_req, res) => {
-  let db: 'ok' | 'error' = 'ok'
-  try {
-    await prisma.$queryRaw`SELECT 1`
-  } catch {
-    db = 'error'
-  }
-  res.json({
-    status: 'ok',
+  const info = {
     env: ENV,
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
-    db,
-  })
+  }
+  try {
+    await prisma.$queryRaw`SELECT 1`
+    res.json({ status: 'ok', db: 'ok', ...info })
+  } catch {
+    res.status(503).json({ status: 'degraded', db: 'error', ...info })
+  }
 })
 
 app.use('/api/products', productRouter)
@@ -46,7 +45,15 @@ const server = app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT} [${ENV}]`)
 })
 
+let shuttingDown = false
+
 async function shutdown() {
+  if (shuttingDown) return
+  shuttingDown = true
+
+  const forceExit = setTimeout(() => process.exit(1), 10_000)
+  forceExit.unref()
+
   await prisma.$disconnect()
   server.close(() => process.exit(0))
 }
