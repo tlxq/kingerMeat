@@ -1,11 +1,9 @@
 import { Router } from 'express'
 import { getStats } from '../controllers/stats.js'
-import { asyncHandler } from '../middleware/asyncHandler.js'
 
 const router = Router()
 
-router.get('/', asyncHandler(getStats))
+router.get('/', getStats)
 
 export default router
-
 

@@ -1,12 +1,12 @@
-import { Router } from "express";
+import { Router } from 'express'
 import { getAllCategories, getCategoryById } from '../controllers/categories.js'
-import { asyncHandler } from "../middleware/asyncHandler.js";
+
 const router = Router()
 
 // GET /api/categories --> getAllCategories
-router.get('/', asyncHandler(getAllCategories))
+router.get('/', getAllCategories)
 
-// GET /api/categories/:id --> getCategorieById
-router.get('/:id', asyncHandler(getCategoryById))
+// GET /api/categories/:id --> getCategoryById
+router.get('/:id', getCategoryById)
 
 export default router

@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express'
 import prisma from '../db/prisma.js'
 import { AppError } from '../lib/AppError.js'
-import { z } from 'zod'
+import { idSchema } from '../lib/idSchema.js'
 
 // Returnera all kategorier med koll på antal produkter
 export async function getAllCategories(_req: Request, res: Response) {
@@ -9,6 +9,7 @@ export async function getAllCategories(_req: Request, res: Response) {
     include: {
       _count: { select: { products: true } },
     },
+    orderBy: { id: 'asc' },
   })
   res.json(categories)
 }
@@ -18,7 +19,7 @@ export async function getCategoryById(
   req: Request<{ id: string }>,
   res: Response,
 ) {
-  const parsed = z.coerce.number().int().positive().safeParse(req.params.id)
+  const parsed = idSchema.safeParse(req.params.id)
   if (!parsed.success) throw new AppError(400, 'Invalid id')
   const id = parsed.data
 
