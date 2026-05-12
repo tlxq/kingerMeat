@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { apiFetch } from '../lib/api'
+import ColdStartLoader from '../components/ColdStartLoader'
 import ProductCard from '../components/ProductCard'
 import type { Product, Category } from '../types'
 
@@ -18,16 +19,39 @@ const filterBtnStyle = (active: boolean) => ({
 })
 
 export default function Products() {
-  const [products, setProducts] = useState<Product[]>([])
+  const [searchParams] = useSearchParams()
+  const activeCategory = searchParams.get('category')
+
+  return (
+    <ColdStartLoader
+      fetcher={(signal) => {
+        const path = activeCategory
+          ? `/api/products?category=${activeCategory}`
+          : '/api/products'
+        return apiFetch<Product[]>(path, { signal })
+      }}
+    >
+      {(initialProducts) => <ProductsContent initialProducts={initialProducts} />}
+    </ColdStartLoader>
+  )
+}
+
+function ProductsContent({ initialProducts }: { initialProducts: Product[] }) {
+  const [products, setProducts] = useState<Product[]>(initialProducts)
   const [categories, setCategories] = useState<Category[]>([])
   const [searchParams, setSearchParams] = useSearchParams()
   const activeCategory = searchParams.get('category')
+  const mountedRef = useRef(false)
 
   useEffect(() => {
     apiFetch<Category[]>('/api/categories').then(setCategories).catch(console.error)
   }, [])
 
   useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true
+      return
+    }
     const path = activeCategory
       ? `/api/products?category=${activeCategory}`
       : '/api/products'
