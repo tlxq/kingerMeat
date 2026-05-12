@@ -128,12 +128,12 @@ npm run dev
 
 ## 🗄️ Database
 
-PostgreSQL hosted on [Neon](https://neon.tech). Two entities:
+PostgreSQL hosted on [Neon](https://neon.tech). 
 
 **Category** — `id`, `name`, `slug`, `description`
 **Product** — `id`, `name`, `description`, `price`, `weightGrams`, `stockQty`, `categoryId`, `createdAt`
 
-One category has many products.
+
 
 ---
 
