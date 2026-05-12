@@ -14,6 +14,11 @@ import healthRouter from './routes/health.js'
 import pingRouter from './routes/ping.js'
 import productRouter from './routes/products.js'
 import statsRouter from './routes/stats.js'
+import { execSync } from 'node:child_process'
+import { log } from './lib/log.js'
+
+// Mät tiden från processtart till att servern lyssnar
+const startedAt = performance.now()
 
 const app = express()
 
@@ -44,14 +49,40 @@ let shuttingDown = false
 
 const preflight = await preflightChecks()
 
+// Hämtar git-info från Render-env i prod, annars lokal git, annars inget
+function gitInfo() {
+  if (process.env.RENDER_GIT_COMMIT) {
+    const commit = process.env.RENDER_GIT_COMMIT.slice(0, 7)
+    return process.env.RENDER_GIT_BRANCH
+      ? { commit, branch: process.env.RENDER_GIT_BRANCH }
+      : { commit }
+  }
+  try {
+    return {
+      commit: execSync('git rev-parse --short HEAD').toString().trim(),
+      branch: execSync('git rev-parse --abbrev-ref HEAD').toString().trim(),
+    }
+  } catch {
+    // Ingen .git tillgänglig (t.ex. i en byggd container) — strunta i git-info
+    return {}
+  }
+}
+
+// PUBLIC_URL sätts i Render-dash; lokalt faller den tillbaka på localhost
+const publicUrl = process.env.PUBLIC_URL ?? `http://localhost:${config.PORT}`
+
+const git = gitInfo()
+
 const server = app.listen(config.PORT, () => {
   serverReady = true
   logStartup(
     {
-      port: config.PORT,
+      url: publicUrl,
       env: config.NODE_ENV,
       corsOrigin: config.CORS_ORIGIN,
       dbLatencyMs: preflight.dbLatencyMs,
+      startupMs: Math.round(performance.now() - startedAt),
+      ...git,
     },
     routes,
   )
@@ -61,10 +92,10 @@ async function shutdown() {
   if (shuttingDown) return
   shuttingDown = true
   if (!serverReady) process.exit(0)
-  console.log('Shutdown initiated')
+  log.info('Shutdown initiated')
 
   const forceExit = setTimeout(() => {
-    console.error('Shutdown timed out — force exiting')
+    log.fail('Shutdown timed out — force exiting')
     server.closeAllConnections()
     process.exit(1)
   }, 10_000)
@@ -72,26 +103,26 @@ async function shutdown() {
 
   server.closeIdleConnections()
   server.close(async (err) => {
-    if (err) console.error('Error closing server:', err)
-    console.log('HTTP server closed')
+    if (err) log.fail('Error closing server', err)
+    log.ok('HTTP server closed')
     try {
       await prisma.$disconnect()
-      console.log('Database disconnected')
+      log.ok('Database disconnected')
       process.exit(0)
     } catch (e) {
-      console.error('Error disconnecting prisma:', e)
+      log.fail('Error disconnecting prisma', e)
       process.exit(1)
     }
   })
 }
 
 process.on('SIGTERM', () => {
-  console.log('[signal] SIGTERM received')
+  log.info('[signal] SIGTERM received')
   void shutdown()
 })
 
 process.on('SIGINT', () => {
-  console.log('[signal] SIGINT received')
+  log.info('[signal] SIGINT received')
   if (config.NODE_ENV === 'development') {
     process.exit(0)
   } else {

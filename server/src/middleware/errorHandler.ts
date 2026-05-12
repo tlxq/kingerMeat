@@ -1,6 +1,7 @@
 import { AppError } from '../lib/AppError.js'
 import { ZodError } from 'zod'
 import type { Request, Response, NextFunction } from 'express'
+import { log } from '../lib/log.js'
 
 export function errorHandler(
   err: unknown,
@@ -19,6 +20,6 @@ export function errorHandler(
     })
   }
 
-  console.error(`[${req.method} ${req.originalUrl}]`, err)
+  log.fail(`Unhandled error on ${req.method} ${req.originalUrl}`, err)
   res.status(500).json({ error: 'Internal server error' })
 }
