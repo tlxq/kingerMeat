@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express'
 import prisma from '../db/prisma.js'
 import { AppError } from '../lib/AppError.js'
-import { idSchema } from '../lib/idSchema.js'
+import { parseId } from '../lib/idSchema.js'
 
 // Returnera all kategorier med koll på antal produkter
 export async function getAllCategories(_req: Request, res: Response) {
@@ -19,9 +19,7 @@ export async function getCategoryById(
   req: Request<{ id: string }>,
   res: Response,
 ) {
-  const parsed = idSchema.safeParse(req.params.id)
-  if (!parsed.success) throw new AppError(400, 'Invalid id')
-  const id = parsed.data
+  const id = parseId(req.params.id)
 
   const category = await prisma.category.findUnique({
     where: { id },
