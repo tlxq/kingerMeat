@@ -1,5 +1,7 @@
-// lib/startupLog.ts
-import pc from 'picocolors'
+// Bygger den färgglada startup-banner som syns när servern startar:
+// URL, miljö, db-latens, git-info och en lista över alla registrerade routes.
+// Rent dekorativt — failar något här ska det inte påverka själva servern.
+import { color as pc } from './log.js'
 import type { Router } from 'express'
 
 export interface RouteManifest {
@@ -17,6 +19,8 @@ export interface StartupConfig {
   branch?: string
 }
 
+// Minimal typ för Express interna router-stack — Express exporterar den inte,
+// så vi deklarerar bara fälten vi faktiskt läser för att slippa "any".
 interface ExpressLayer {
   route?: { path: string; methods: Record<string, boolean> }
 }
@@ -44,9 +48,13 @@ function envBadge(env: string): string {
 }
 
 export function logStartup(cfg: StartupConfig, routes: RouteManifest[]): void {
+  // Hela renderingen i try/catch — om Express interna struktur ändras
+  // i framtiden vill vi inte att en trasig startup-logg kraschar servern.
   try {
     const routeLines: string[] = []
 
+    // Gräv ner i varje routers interna stack för att lista alla registrerade
+    // endpoints (metod + path) — Express har inget publikt API för detta.
     for (const { prefix, router } of routes) {
       const stack = (router as unknown as { stack: ExpressLayer[] }).stack
       for (const layer of stack) {
