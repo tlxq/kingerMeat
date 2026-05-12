@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Wrapper som hittar tsx i projektets node_modules och kör cli.ts.
+# readlink -f följer symlinks så `npm link` fungerar transparent.
+set -e
+DIR="$(dirname "$(readlink -f "$0")")"
+exec "$DIR/../node_modules/.bin/tsx" "$DIR/../src/cli/cli.ts" "$@"

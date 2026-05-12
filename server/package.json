@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "bin": {
-    "kingermeat": "./dist/cli/cli.js"
+    "kingermeat": "./bin/kingermeat"
   },
   "main": "index.js",
   "scripts": {
@@ -11,15 +11,13 @@
     "build": "prisma generate && tsc",
     "demo": "tsx src/index.ts",
     "start": "NODE_ENV=production sh -c 'prisma migrate deploy && node dist/index.js'",
+    "cli": "tsx src/cli/cli.ts",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "type": "module",
   "dependencies": {
     "@prisma/client": "^6.19.3",
