@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client" // den genererade klienten
 import 'dotenv/config'
-const prisma = new PrismaClient()
+import prisma from '../src/db/prisma.js'
 
 async function main() {
   // rensa först så vi inte får dubbletter vid omstart
