@@ -11,6 +11,7 @@ import { errorHandler } from './middleware/errorHandler.js'
 import { requestLogger } from './middleware/requestLogger.js'
 import categoryRouter from './routes/categories.js'
 import healthRouter from './routes/health.js'
+import pingRouter from './routes/ping.js'
 import productRouter from './routes/products.js'
 import statsRouter from './routes/stats.js'
 
@@ -23,6 +24,7 @@ app.use(requestLogger)
 
 const routes: RouteManifest[] = [
   { prefix: '/health', router: healthRouter },
+  { prefix: '/api/ping', router: pingRouter },
   { prefix: '/api/products', router: productRouter },
   { prefix: '/api/categories', router: categoryRouter },
   { prefix: '/api/stats', router: statsRouter },
