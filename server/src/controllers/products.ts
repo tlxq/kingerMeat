@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express'
 import prisma from '../db/prisma.js'
 import { AppError } from '../lib/AppError.js'
-import { z } from 'zod'
+import { idSchema } from '../lib/idSchema.js'
 
 // Hämtar alla produkter, filtrerar på kategori om query skickas med
 export async function getAllProducts(req: Request, res: Response) {
@@ -11,12 +11,11 @@ export async function getAllProducts(req: Request, res: Response) {
   const products = await prisma.product.findMany({
     ...(category ? { where: { category: { slug: category as string } } } : {}),
     include: { category: true },
+    orderBy: { id: 'asc' },
   })
 
   res.json(products)
 }
-
-const idSchema = z.coerce.number().int().positive()
 
 // Hämtar från produktens id 400 om id är fel eller 404 om produkten inte finns
 export async function getProductById(
