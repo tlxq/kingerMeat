@@ -1,44 +1,46 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
+    // Källkod ligger i src/, byggd output hamnar i dist/
     "rootDir": "./src",
     "outDir": "./dist",
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
+
+    // ESM med Node-stil imports (.js-suffix krävs)
     "module": "nodenext",
-    "target": "esnext",
-    "types": [
-      "node"
-    ],
-    // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
-    // Other Outputs
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
+    // Kompilerar till ES2023-syntax
+    "target": "ES2023",
+    // Tillgängliga inbyggda typer — ES2023 utan DOM så window/document inte finns
+    "lib": ["ES2023"],
+    // Begränsar typ-sökning till @types/node
+    "types": ["node"],
+
+    // Slår på alla strikta checks på en gång
+    "strict": true,
+    // Alla kod-grenar i en funktion måste returnera ett värde
+    "noImplicitReturns": true,
+    // Variabler och parametrar som aldrig används blir fel
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true,
-    // Recommended Options
-    "strict": true,
+
+    // Skiljer på "property saknas" och "property är undefined"
+    "exactOptionalPropertyTypes": true,
+    // array[i] ger T | undefined istället för T — tvingar felhantering
+    "noUncheckedIndexedAccess": true,
+    // switch-case utan break/return blir ett fel
+    "noFallthroughCasesInSwitch": true,
+
+    // Genererar .map-filer så stack traces pekar på .ts-källan
+    "sourceMap": true,
+
+    // import type måste skrivas explicit — hindrar runtime-imports av typer
     "verbatimModuleSyntax": true,
+    // Varje fil måste kunna kompileras separat (krav för tsx)
     "isolatedModules": true,
+    // import 'dotenv/config'-stil spåras av TypeScript
     "noUncheckedSideEffectImports": true,
+    // Alla filer behandlas som moduler, inte globala scripts
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    // Hoppar över typkoll av .d.ts i node_modules — snabbare och mindre brus
+    "skipLibCheck": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

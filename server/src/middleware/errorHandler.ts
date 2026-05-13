@@ -29,5 +29,5 @@ export function errorHandler(
   // Allt annat = oväntad bugg. Logga internt men läck INTE detaljer
   // till klienten (säkerhetsrisk — stack-traces kan avslöja interna paths).
   log.fail(`Unhandled error on ${req.method} ${req.originalUrl}`, err)
-  res.status(500).json({ error: 'Internal server error' })
+  return res.status(500).json({ error: 'Internal server error' })
 }
