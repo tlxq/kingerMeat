@@ -81,7 +81,7 @@ const program = new Command()
 
 program
   .name('kingermeat')
-  .description('Backend utility CLI för debug & API-anrop')
+  .description('Backend utility CLI for debug & API requests')
   .version(pkg.version)
   .configureHelp({ formatHelp })
   .addHelpCommand(false)
@@ -99,8 +99,8 @@ async function runRequest(path: string): Promise<void> {
 
 program
   .command('serve')
-  .description('Starta API-servern (samma som npm run dev/start)')
-  .option('--prod', 'kör med NODE_ENV=production — Ctrl+C kör graceful shutdown')
+  .description('Start the API server (same as npm run dev/start)')
+  .option('--prod', 'run with NODE_ENV=production — Ctrl+C triggers graceful shutdown')
   .action(async (opts: { prod?: boolean }) => {
     if (opts.prod) process.env.NODE_ENV = 'production'
     await import('../index.js')
@@ -108,31 +108,31 @@ program
 
 program
   .command('seed')
-  .description('Kör prisma db seed')
+  .description('Run prisma db seed')
   .action(() => {
     execSync('npx prisma db seed', { stdio: 'inherit' })
   })
 
 program
   .command('ping')
-  .description('GET /api/ping — uptime & timestamp')
+  .description('GET /api/ping — uptime & timestamp (liveness check)')
   .action(() => runRequest('/api/ping'))
 
 program
   .command('health')
-  .description('GET /health — status & db-koll')
+  .description('GET /health — server status & database check')
   .action(() => runRequest('/health'))
 
 program
   .command('stats')
-  .description('GET /api/stats — räknare för produkter/kategorier/lager')
+  .description('GET /api/stats — product, category and stock counts')
   .action(() => runRequest('/api/stats'))
 
 program
   .command('products')
-  .argument('[id]', 'produkt-id (utelämna för att lista alla)')
-  .option('-c, --category <slug>', 'filtrera på kategori-slug')
-  .description('GET /api/products eller /api/products/:id')
+  .argument('[id]', 'product id (omit to list all)')
+  .option('-c, --category <slug>', 'filter by category slug')
+  .description('GET /api/products or /api/products/:id')
   .action((id: string | undefined, opts: { category?: string }) => {
     const base = id ? `/api/products/${id}` : '/api/products'
     const path =
@@ -144,8 +144,8 @@ program
 
 program
   .command('categories')
-  .argument('[id]', 'kategori-id (utelämna för att lista alla)')
-  .description('GET /api/categories eller /api/categories/:id')
+  .argument('[id]', 'category id (omit to list all)')
+  .description('GET /api/categories or /api/categories/:id')
   .action((id: string | undefined) => {
     const path = id ? `/api/categories/${id}` : '/api/categories'
     return runRequest(path)
@@ -154,18 +154,18 @@ program
 program
   .command('debug')
   .argument('<type>', 'slow | throw | zod | error/:code')
-  .description('Trigga errorHandler-grenar via /api/debug/:type')
+  .description('Trigger error handler branches via /api/debug/:type')
   .action((type: string) => runRequest(`/api/debug/${type}`))
 
 program
   .command('get')
-  .argument('<path>', 'godtycklig path, t.ex. /api/products?category=nöt')
-  .description('Generiskt GET-anrop mot valfri endpoint')
+  .argument('<path>', 'any path, e.g. /api/products?category=venison')
+  .description('Generic GET request to any endpoint')
   .action((path: string) => runRequest(path))
 
 program
   .command('doctor')
-  .description('Fullt hälsoprotokoll: env, db, schema, routes')
+  .description('Full health check: env, db, schema and routes')
   .action(async () => {
     let allOk = true
 
