@@ -3,7 +3,7 @@ import prisma from '../db/prisma.js'
 import { AppError } from '../lib/AppError.js'
 import { parseId } from '../lib/idSchema.js'
 
-// Returnera all kategorier med koll på antal produkter
+// Hämtar alla kategorier och räknar hur många produkter varje kategori har.
 export async function getAllCategories(_req: Request, res: Response) {
   const categories = await prisma.category.findMany({
     include: {
@@ -14,11 +14,12 @@ export async function getAllCategories(_req: Request, res: Response) {
   res.json(categories)
 }
 
-// Hämtar en kategori med tillhörande produkter, 404 om den inte finns.
+// Hämtar en kategori med tillhörande produkter. Ger 404 om id inte finns.
 export async function getCategoryById(
   req: Request<{ id: string }>,
   res: Response,
 ) {
+  // parseId validerar att id är ett positivt heltal, annars kastas ett fel.
   const id = parseId(req.params.id)
 
   const category = await prisma.category.findUnique({

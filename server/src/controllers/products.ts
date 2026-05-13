@@ -4,15 +4,16 @@ import prisma from '../db/prisma.js'
 import { AppError } from '../lib/AppError.js'
 import { parseId } from '../lib/idSchema.js'
 
+// Validerar att ?category= är en sträng om den skickas med — annars är den optional.
 const productQuerySchema = z.object({
   category: z.string().min(1).optional(),
 })
 
-// Hämtar alla produkter, filtrerar på kategori om query skickas med
+// Hämtar alla produkter. Om ?category=slug skickas med så filtreras listan på den kategorin.
 export async function getAllProducts(req: Request, res: Response) {
   const { category } = productQuerySchema.parse(req.query)
 
-  // hämta alla produkter inkl. kategorinamnet på varje produkt
+  // include drar med kategori-objektet på varje produkt så frontend slipper göra extra anrop.
   const products = await prisma.product.findMany({
     ...(category ? { where: { category: { slug: category } } } : {}),
     include: { category: true },
@@ -22,7 +23,7 @@ export async function getAllProducts(req: Request, res: Response) {
   res.json(products)
 }
 
-// Hämtar från produktens id 400 om id är fel eller 404 om produkten inte finns
+// Hämtar en produkt via id. 400 om id är ogiltigt (parseId kastar), 404 om produkten inte finns.
 export async function getProductById(
   req: Request<{ id: string }>,
   res: Response,

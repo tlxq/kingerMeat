@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import prisma from '../src/db/prisma.js'
 
+// Fyller databasen med testdata — körs med `npm run seed` vid uppstart eller reset.
 async function main() {
   // rensa först så vi inte får dubbletter vid omstart
   await prisma.product.deleteMany()

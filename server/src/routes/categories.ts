@@ -1,12 +1,13 @@
 import { Router } from 'express'
 import { getAllCategories, getCategoryById } from '../controllers/categories.js'
 
+// Router för /api/categories — läsoperationer (read-only) mot kategori-tabellen.
 const router = Router()
 
-// GET /api/categories --> getAllCategories
+// Lista alla kategorier.
 router.get('/', getAllCategories)
 
-// GET /api/categories/:id --> getCategoryById
+// Hämta en kategori via id — controllern validerar att id är ett positivt heltal.
 router.get('/:id', getCategoryById)
 
 export default router

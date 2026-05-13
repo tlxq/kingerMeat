@@ -1,4 +1,4 @@
-// Generator för att generera
+// Talar om för Prisma att generera en TypeScript-klient vi kan importera i koden.
 generator client {
   provider = "prisma-client-js" // genererar klienten vi importerar i koden
 }

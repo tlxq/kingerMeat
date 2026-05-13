@@ -9,6 +9,7 @@ export interface ApiResult {
   ok: boolean
 }
 
+// KM_API_URL låter oss peka CLI:t mot en annan server, t.ex. den på Render.
 export function getBaseUrl(): string {
   return process.env.KM_API_URL ?? `http://localhost:${config.PORT}`
 }
@@ -28,6 +29,7 @@ function colorStatus(status: number): string {
   return c.green(String(status))
 }
 
+// Gör ett GET-anrop och mäter svarstiden. Faller tillbaka på text om svaret inte är JSON.
 export async function apiGet(path: string): Promise<ApiResult> {
   const url = getBaseUrl() + (path.startsWith('/') ? path : `/${path}`)
   const start = performance.now()

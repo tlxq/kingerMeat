@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { AppError } from '../lib/AppError.js'
 
+// Debug-routes för att testa error middleware och graceful shutdown. Registreras aldrig i prod.
 const router = Router()
 
 // Hänger 60s så att server.close() inte kan stänga direkt — används för att
