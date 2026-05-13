@@ -1,10 +1,18 @@
 # Kinger Meat
 
-![Kinger Meat](./client/public/img/logo.png)
+<img src="./client/public/img/logo.png" width="300" />
 
 Online shop for wild game meat from Sörmland, Sweden. Built as a school final project for the YH backend course (F25D) at Yrkeshögskolan i Borås.
 
 **Live:** [kingermeat.ttdevs.com](https://kingermeat.ttdevs.com) · **API:** [api.kingermeat.ttdevs.com](https://api.kingermeat.ttdevs.com)
+
+---
+
+## Preview
+
+**Startup**
+
+![Startup](./client/public/img/startup.gif)
 
 ---
 
@@ -82,14 +90,15 @@ Install it locally with:
 cd server && npm link
 ```
 
+![Help](./client/public/img/help.gif)
+
+Run a full health check — verifies env, database connection, Prisma schema and all API routes:
+
 ```bash
-kingermeat serve          # start the server
-kingermeat serve --prod   # start with NODE_ENV=production
-kingermeat health         # check server and database status
-kingermeat products       # list all products
-kingermeat doctor         # full health check (env, db, schema, routes)
-kingermeat --help         # all available commands
+kingermeat doctor
 ```
+
+![Doctor](./client/public/img/doctor.gif)
 
 ### Frontend
 
@@ -143,12 +152,10 @@ npm run dev
 
 ## 🗄️ Database
 
-PostgreSQL hosted on [Neon](https://neon.tech). 
+PostgreSQL hosted on [Neon](https://neon.tech).
 
 **Category** — `id`, `name`, `slug`, `description`
 **Product** — `id`, `name`, `description`, `price`, `weightGrams`, `stockQty`, `categoryId`, `createdAt`
-
-
 
 ---
 
@@ -160,4 +167,4 @@ PostgreSQL hosted on [Neon](https://neon.tech).
 | Frontend | Render   | kingermeat.ttdevs.com          |
 | Database | Neon     | [neon.tech](https://neon.tech) |
 
-![Kinger Meat GIF](./client/public/img/logo-glitch.gif)
+![Kinger Meat](./client/public/img/logo-glitch.gif)
