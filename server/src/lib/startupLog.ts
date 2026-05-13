@@ -41,7 +41,7 @@ function hyperlink(url: string): string {
 }
 
 // Färgad badge för miljö — röd PROD är svår att missa
-function envBadge(env: string): string {
+export function envBadge(env: string): string {
   if (env === 'production') return pc.bgRed(pc.white(' PROD '))
   if (env === 'staging') return pc.bgYellow(pc.black(' STAGING '))
   return pc.bgGreen(pc.black(' DEV '))

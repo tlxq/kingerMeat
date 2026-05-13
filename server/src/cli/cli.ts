@@ -1,15 +1,90 @@
 import 'dotenv/config'
 import { execSync } from 'node:child_process'
-import { Command } from 'commander'
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { Command, type Help } from 'commander'
 import { apiGet, getBaseUrl, printOffline, printResponse } from './format.js'
 import { color as c, sym } from '../lib/log.js'
+import { envBadge } from '../lib/startupLog.js'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const pkg = JSON.parse(
+  readFileSync(join(__dirname, '../../package.json'), 'utf8'),
+) as { version: string }
+
+// Anpassad help-rendering i samma stil som serve-bannern (src/lib/startupLog.ts).
+// Padding görs på ofärgade strängar för att ANSI-koder inte ska räknas in i längden.
+function formatHelp(cmd: Command, helper: Help): string {
+  const env = process.env.NODE_ENV ?? 'development'
+  // isRoot avgör om vi visar Examples och Help-raden — subkommandon får bara Options.
+  const isRoot = cmd.parent === null
+
+  const commandRows = helper.visibleCommands(cmd).map((sub) => ({
+    name: helper.subcommandTerm(sub),
+    desc: sub.description(),
+  }))
+  // Räknar ut padding från längsta namnet så kolumnerna blir jämna.
+  const cmdPad =
+    commandRows.length > 0
+      ? Math.max(...commandRows.map((r) => r.name.length)) + 2
+      : 0
+
+  const optionRows = helper.visibleOptions(cmd).map((opt) => ({
+    flags: helper.optionTerm(opt),
+    desc: opt.description,
+  }))
+  const optPad =
+    optionRows.length > 0
+      ? Math.max(...optionRows.map((r) => r.flags.length)) + 2
+      : 0
+
+  const usage = `${helper.commandUsage(cmd)}`
+
+  const lines: string[] = []
+  lines.push('')
+  lines.push(`  ${c.bold('Kinger Meat CLI')}  ${envBadge(env)}`)
+  lines.push(`  ${c.dim(`v${pkg.version}`)}`)
+  lines.push('')
+  lines.push(`  ${c.dim('Usage')}   ${usage}`)
+  if (isRoot) lines.push(`  ${c.dim('Help')}    kingermeat help <command>`)
+
+  if (commandRows.length > 0) {
+    lines.push('')
+    lines.push(`  ${c.dim(`Commands (${commandRows.length})`)}`)
+    for (const { name, desc } of commandRows) {
+      lines.push(`     ${c.green(name.padEnd(cmdPad))} ${c.dim(desc)}`)
+    }
+  }
+
+  if (optionRows.length > 0) {
+    lines.push('')
+    lines.push(`  ${c.dim('Options')}`)
+    for (const { flags, desc } of optionRows) {
+      lines.push(`     ${flags.padEnd(optPad)} ${c.dim(desc)}`)
+    }
+  }
+
+  if (isRoot) {
+    lines.push('')
+    lines.push(`  ${c.dim('Examples')}`)
+    lines.push(`     ${c.dim('$')} kingermeat ping`)
+    lines.push(`     ${c.dim('$')} kingermeat products --category nöt`)
+    lines.push(`     ${c.dim('$')} kingermeat doctor`)
+  }
+  lines.push('')
+
+  return lines.join('\n')
+}
 
 const program = new Command()
 
 program
   .name('kingermeat')
   .description('Backend utility CLI för debug & API-anrop')
-  .version('1.0.0')
+  .version(pkg.version)
+  .configureHelp({ formatHelp })
+  .addHelpCommand(false)
 
 // Wrapper som gör fetch-anrop till alla kommandon hanterar offline-server lika
 async function runRequest(path: string): Promise<void> {
@@ -25,7 +100,9 @@ async function runRequest(path: string): Promise<void> {
 program
   .command('serve')
   .description('Starta API-servern (samma som npm run dev/start)')
-  .action(async () => {
+  .option('--prod', 'kör med NODE_ENV=production — Ctrl+C kör graceful shutdown')
+  .action(async (opts: { prod?: boolean }) => {
+    if (opts.prod) process.env.NODE_ENV = 'production'
     await import('../index.js')
   })
 

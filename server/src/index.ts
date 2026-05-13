@@ -44,7 +44,7 @@ const routes: RouteManifest[] = [
 
 // Debug-routes registreras bara utanför prod — de exponerar avsiktliga fel
 // och en hängande endpoint som annars skulle vara en gratis DoS-vektor.
-if (config.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   routes.push({ prefix: '/api/debug', router: debugRouter })
 }
 
@@ -97,7 +97,7 @@ const server = app.listen(config.PORT, () => {
   logStartup(
     {
       url: publicUrl,
-      env: config.NODE_ENV,
+      env: process.env.NODE_ENV ?? config.NODE_ENV,
       corsOrigin: config.CORS_ORIGIN,
       dbLatencyMs: preflight.dbLatencyMs,
       startupMs: Math.round(performance.now() - startedAt),
@@ -151,7 +151,7 @@ process.on('SIGTERM', () => {
 // i prod kör vi samma graceful shutdown som SIGTERM.
 process.on('SIGINT', () => {
   log.info('[signal] SIGINT received')
-  if (config.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV !== 'production') {
     process.exit(0)
   } else {
     void shutdown()
