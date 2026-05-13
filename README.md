@@ -40,7 +40,7 @@ kingerMeat/
 
 ### Requirements
 
-- Node.js 20+
+- Node.js 22+
 - A PostgreSQL database (e.g. [Neon](https://neon.tech) free tier)
 
 ### Backend
@@ -72,6 +72,25 @@ Start dev server:
 npm run dev
 ```
 
+### CLI
+
+The project includes a CLI tool for interacting with the API and managing the server.
+
+Install it locally with:
+
+```bash
+cd server && npm link
+```
+
+```bash
+kingermeat serve          # start the server
+kingermeat serve --prod   # start with NODE_ENV=production
+kingermeat health         # check server and database status
+kingermeat products       # list all products
+kingermeat doctor         # full health check (env, db, schema, routes)
+kingermeat --help         # all available commands
+```
+
 ### Frontend
 
 ```bash
@@ -97,11 +116,13 @@ npm run dev
 
 ## 🔌 API endpoints
 
-### Health
+### Health & status
 
-| Method | Path      | Description   |
-| ------ | --------- | ------------- |
-| GET    | `/health` | Server status |
+| Method | Path         | Description                          |
+| ------ | ------------ | ------------------------------------ |
+| GET    | `/health`    | Server and database status           |
+| GET    | `/api/ping`  | Lightweight liveness check           |
+| GET    | `/api/stats` | Total products, categories and stock |
 
 ### Products
 
@@ -117,12 +138,6 @@ npm run dev
 | ------ | --------------------- | --------------------------------- |
 | GET    | `/api/categories`     | All categories with product count |
 | GET    | `/api/categories/:id` | Single category with its products |
-
-### Stats
-
-| Method | Path         | Description                                    |
-| ------ | ------------ | ---------------------------------------------- |
-| GET    | `/api/stats` | Total products, categories, and stock quantity |
 
 ---
 
