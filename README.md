@@ -2,6 +2,22 @@
   <img src="./client/public/img/logo.png" width="400" />
 
 # Kinger Meat
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?logo=typescript)
+![Node.js](https://img.shields.io/badge/Node.js-20-green?logo=node.js)
+![Express](https://img.shields.io/badge/Express-5-black?logo=express)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql)
+![Zod](https://img.shields.io/badge/Zod-Validation-3068B7)
+![Status](https://img.shields.io/badge/status-active-success)
+![API](https://img.shields.io/badge/API-REST-orange)
+![Frontend](https://img.shields.io/badge/Frontend-React_19-61DAFB?logo=react)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-Utility_First-38B2AC?logo=tailwind-css)
+![Render](https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render)
+![Neon](https://img.shields.io/badge/Database-Neon-00E599)
+![CLI](https://img.shields.io/badge/CLI-Custom-informational)
+![Observability](https://img.shields.io/badge/Observability-Integrated-purple)
+![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen)
+![Open Source](https://img.shields.io/badge/Open_Source-Yes-success)
 
 **Premium wild game meat from Sörmland – Powered by a robust Node.js/TypeScript backend.**
 
