@@ -175,9 +175,11 @@ program
 
     // 1. Env
     try {
-      const { config } = await import('../lib/env.js')
+      const { config, isEnvValid } = await import('../lib/env.js')
+      const icon = isEnvValid ? sym.ok : sym.fail
+      if (!isEnvValid) allOk = false
       console.log(
-        `${sym.ok} Env ${c.dim(`(PORT=${config.PORT}, NODE_ENV=${config.NODE_ENV}, CORS=${config.CORS_ORIGIN})`)}`,
+        `${icon} Env ${c.dim(`(PORT=${config.PORT}, NODE_ENV=${config.NODE_ENV}, CORS=${config.CORS_ORIGIN})`)}`,
       )
     } catch (err) {
       allOk = false

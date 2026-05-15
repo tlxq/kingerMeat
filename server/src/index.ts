@@ -1,5 +1,8 @@
 import 'dotenv/config'
-import { config } from './lib/env.js'
+import { config, validateEnvOrExit } from './lib/env.js'
+
+validateEnvOrExit()
+
 import cors from 'cors'
 import express from 'express'
 import helmet from 'helmet'

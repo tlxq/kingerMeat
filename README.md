@@ -3,6 +3,7 @@
 
 # Kinger Meat
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?logo=typescript)
+![npm](https://img.shields.io/npm/v/kingermeat-backend?color=red&logo=npm)
 ![Node.js](https://img.shields.io/badge/Node.js-20-green?logo=node.js)
 ![Express](https://img.shields.io/badge/Express-5-black?logo=express)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)
@@ -59,6 +60,23 @@ The project includes a custom **`kingermeat doctor`** CLI tool that performs exh
 
 - **Serverless PostgreSQL**: Hosted on Neon with automated scaling.
 - **Graceful Handling**: Integrated `ColdStartLoader` to manage serverless cold starts seamlessly for the user.
+
+## 🛠 Global CLI
+
+You can install the Kinger Meat CLI globally to manage and debug the API from anywhere:
+
+```bash
+npm install -g kingermeat-backend
+
+# Get help
+kingermeat --help
+
+# Run health diagnostics
+kingermeat doctor
+
+# List products from the production API
+KM_API_URL=https://api.kingermeat.ttdevs.com kingermeat products
+```
 
 ---
 

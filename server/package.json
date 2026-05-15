@@ -1,9 +1,9 @@
 {
   "name": "kingermeat-backend",
-  "version": "2.3.4",
+  "version": "2.3.6",
   "description": "REST API för Kinger Meat — hanterar produkter, kategorier och lagerstatus",
   "bin": {
-    "kingermeat": "./dist/cli/cli.js"
+    "kingermeat": "dist/cli/cli.js"
   },
   "main": "dist/index.js",
   "files": [
@@ -25,6 +25,11 @@
   "author": "tlxq",
   "license": "ISC",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tlxq/kingerMeat.git",
+    "directory": "server"
+  },
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "commander": "^14.0.3",
