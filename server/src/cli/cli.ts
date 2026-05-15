@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import 'dotenv/config'
 import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
@@ -100,7 +101,10 @@ async function runRequest(path: string): Promise<void> {
 program
   .command('serve')
   .description('Start the API server (same as npm run dev/start)')
-  .option('--prod', 'run with NODE_ENV=production — Ctrl+C triggers graceful shutdown')
+  .option(
+    '--prod',
+    'run with NODE_ENV=production — Ctrl+C triggers graceful shutdown',
+  )
   .action(async (opts: { prod?: boolean }) => {
     if (opts.prod) process.env.NODE_ENV = 'production'
     await import('../index.js')
