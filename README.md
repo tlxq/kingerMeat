@@ -80,10 +80,6 @@ kingerMeat/
 └── client/       React + Vite frontend
 ```
 
-A detailed tree of `server/` with per-file descriptions is in [`docs/structure.md`](./docs/structure.md).
-
----
-
 ## Local development
 
 ### Requirements
